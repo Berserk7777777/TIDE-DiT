@@ -1,0 +1,27 @@
+# Datasets, cached text features, and pretrained diffusion assets
+data/
+
+# Training checkpoints, predictions, logs, and other generated results
+result/
+tdsm/
+checkpoints/
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.npy
+*.npz
+*.tar.gz
+*.zip
+
+# Local experiments and development state
+tmp/
+__pycache__/
+*.py[cod]
+.idea/
+.agents/
+.claude/
+
+# System files
+.DS_Store
+Thumbs.db

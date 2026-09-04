@@ -1,0 +1,97 @@
+seed: 2026
+num_worker: 0
+work_dir: ./result/stgcn/ntu60/split4_unseen5
+
+feeder: feeders.feeder.FeatureFeeder
+train_feeder_args:
+  path: ./data/sk_feats/stgcn_ntu60_split4_5_r/
+  split: train
+test_feeder_args:
+  path: ./data/sk_feats/stgcn_ntu60_split4_5_r/
+  split: test
+
+optimizer: AdamW
+learning_rate: 0.0001
+weight_decay: 0.01
+lr_scheduler: cosine
+num_iter: 14300
+num_epoch: 100
+num_warmup: 100
+eval_epoch: 1
+grad_clip: 1.0
+batch_size: 16
+test_batch_size: 64
+gradient_accumulation_steps: 16
+gpu: 0
+
+unseen_label: 5
+unseen_label_path: ./data/label_splits/ntu60_split4/ru5.npy
+pretrained_model_name_or_path: sd2-community/stable-diffusion-2-1
+local_files_only: true
+prediction_type: sample
+num_steps: 50
+idx_inference_step: 25
+num_noise: 3
+
+text_condition_mode: clip_token
+text_class_list_path: ./data/class_lists/ntu60.csv
+text_llm_path: ./data/class_lists/ntu60_llm.txt
+clip_text_feature_path: ./data/text_feats/ntu60/clip_token_sd2/clip_tokens.npy
+cond_size: 2048
+in_channels: 256
+hidden_size: 768
+depth: 12
+num_heads: 12
+model_type: fine_grained
+feature_tokens: 8
+text_fusion: channel
+mask_text_padding: false
+
+loss_mode: tdsm_x0_action_primitive_multilabel
+rec_weight: 1.0
+tdsm_triplet_weight: 2.5
+tdsm_triplet_margin: 0.1
+align_layer: 8
+proj_size: 1024
+primitive_min_seen_df: 1
+primitive_max_seen_fraction: 0.8
+primitive_max_count: 256
+primitive_logit_scale: 10.0
+primitive_logit_bias: -2.0
+primitive_negative_gamma: 2.0
+primitive_negative_loss_weight: 0.25
+primitive_multilabel_weight: 0.05
+primitive_warmup_steps: 1000
+primitive_detach_backbone: true
+
+use_ema: false
+eval_a3_calib: true
+eval_row_zscore: true
+eval_noise_seed: 2026
+eval_transductive: true
+eval_transductive_iters: 3
+eval_transductive_temp: 1.0
+
+eval_also_proj_score: false
+eval_primitive_score: true
+eval_primitive_timesteps: [25]
+eval_primitive_num_noise: 3
+eval_primitive_negative_weight: 0.1
+eval_primitive_a3_calib: true
+eval_primitive_row_zscore: true
+eval_primitive_late_fusion: true
+eval_primitive_late_alpha: 0.15
+eval_primitive_late_topk: 3
+eval_primitive_confidence_scale: 0.5
+eval_primitive_a0_confidence_scale: 0.5
+
+eval_feature_graph: false
+eval_feature_graph_k: 100
+eval_feature_graph_tau: 0.10
+eval_feature_graph_alpha: 1.0
+eval_feature_graph_iters: 5
+eval_feature_graph_block_size: 512
+
+
+
+
