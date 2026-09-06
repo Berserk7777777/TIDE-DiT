@@ -1,10 +1,16 @@
 # TIDE-DiT
 
+<p align="center">
+  <a href="#data-preparation">📦 Data</a> &nbsp;|&nbsp;
+  <a href="#training">🚀 Training</a> &nbsp;|&nbsp;
+  <a href="#checkpoints">🔐 Checkpoints</a>
+</p>
+
 TIDE-DiT is a diffusion-based framework for zero-shot skeleton-based action recognition. It learns fine-grained skeleton-text alignment with token-level action descriptions, a primitive-aware training objective, and an optional frozen feature-graph refinement at inference time.
 
 This implementation is built on [TDSM](https://github.com/KAIST-VICLab/TDSM). 
 
-## Motivation
+## 💡 Motivation
 
 <p align="center">
   <img src="assets/motivation.png" alt="Motivation: text-description comparison and the label-10/11 prediction-collapse analysis" width="100%">
@@ -12,7 +18,7 @@ This implementation is built on [TDSM](https://github.com/KAIST-VICLab/TDSM).
 
 The left comparison shows that expanding the action descriptions alone does not account for the performance gain: TIDE-DiT remains stronger under both the skeleton-focused and current descriptions. The right comparison exposes a failure mode of x-prediction TDSM on two semantically close unseen actions, where predictions collapse toward label 11. TIDE-DiT yields more balanced prediction regions and preserves the discriminative boundary between the two classes.
 
-## Training Framework
+## 🧩 Training Framework
 
 <p align="center">
   <img src="assets/TrainingFramework.png" alt="TIDE-DiT training framework" width="100%">
@@ -20,14 +26,14 @@ The left comparison shows that expanding the action descriptions alone does not 
 
 Given frozen skeleton features and tokenized action descriptions, TIDE-DiT denoises a set of skeleton tokens with self-attention, text cross-attention, and global text modulation. The model reconstructs the feature representation while the primitive-aware branch supervises the intermediate token representation. Ranking against a randomly sampled seen-class description enforces a larger text-conditioned reconstruction margin.
 
-## Highlights
+## ✨ Highlights
 
 - Fine-grained skeleton-token and text-token interaction in the diffusion transformer.
 - Primitive-aware training that improves discrimination among semantically similar unseen actions.
 - Label-free frozen feature-graph refinement, applied only after model training.
 - Reproducible configurations for Shift-GCN, ST-GCN, and PKU-MMD protocols.
 
-## Environment
+## 🛠️ Environment
 
 The released settings were verified with the `tide` environment on Python 3.11.15, PyTorch 2.11.0, and CUDA 12.8.
 
@@ -44,7 +50,11 @@ Alternatively, create the same environment directly with `conda env create -f en
 
 The configurations use `sd2-community/stable-diffusion-2-1` with `local_files_only: true`. Download the model into the Hugging Face cache before running, or change that setting when online access is available.
 
-## Data Preparation
+## 📦 Data Preparation
+
+We follow the evaluation settings of [SynSE](https://github.com/skelemoa/synse-zsl), [PURLS](https://github.com/azzh1/PURLS), and [SMIE](https://github.com/YujieOuO/SMIE). Download the **pre-extracted skeleton features** for the SynSE and SMIE settings, together with the class descriptions, from [SA-DVAE](https://github.com/pha123661/SA-DVAE).
+
+**Note:** Pre-extracted skeleton features for the PURLS settings are not provided. Therefore, we extracted the skeleton features ourselves using the official [Shift-GCN](https://github.com/kchengiva/Shift-GCN) code.
 
 Place pre-extracted skeleton features, class descriptions, label splits, and tokenized text features under `data/`:
 
@@ -69,7 +79,7 @@ data/
 
 Each feature directory must contain `train.npy`, `train_label.npy`, `ztest.npy`, and `z_label.npy`. The corresponding label split and text-feature paths are specified in each YAML file.
 
-## Training
+## 🚀 Training
 
 Each pair below first trains TIDE-DiT and then loads the selected checkpoint for feature-graph inference. The second command does not train the model again.
 
@@ -174,7 +184,11 @@ python scripts/train_feat_c2u_zsl.py --config ./config/tide_stgcn_pku51_split3_u
 
 The same commands and a configuration/output-directory index are available in [config/TIDE_FINAL_CONFIGS.md](config/TIDE_FINAL_CONFIGS.md).
 
-## Outputs
+## 🔐 Checkpoints
+
+Pretrained TIDE-DiT checkpoints will be released upon paper acceptance.
+
+## 📊 Outputs
 
 Training and final inference results are organized by backbone and dataset:
 
@@ -189,20 +203,3 @@ result/
 ```
 
 Each run stores the resolved configuration, checkpoint, validation log, metrics, predictions, confusion matrix, and per-class accuracy.
-
-## Acknowledgement
-
-TIDE-DiT is built upon TDSM:
-
-```bibtex
-@InProceedings{Do_2025_ICCV,
-    author    = {Jeonghyeok Do and Munchurl Kim},
-    title     = {Bridging the Skeleton-Text Modality Gap: Diffusion-Powered Modality Alignment for Zero-shot Skeleton-based Action Recognition},
-    booktitle = {Proceedings of the IEEE/CVF International Conference on Computer Vision},
-    year      = {2025}
-}
-```
-
-## License
-
-This project is released under the [MIT License](LICENSE). Please also respect the licenses and data terms of TDSM, Stable Diffusion, and any downloaded datasets or skeleton-feature extractors.
